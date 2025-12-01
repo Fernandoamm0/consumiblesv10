@@ -9,77 +9,113 @@
         body {
             margin: 0;
             font-family: 'Segoe UI', Arial, sans-serif;
-            background: #e9eef3;
-            color: #333;
+            background: #f0f3f8;
+            color: #2f2f2f;
         }
 
         /* ENCABEZADO */
         header {
-            background: white; /* Fondo obligatorio blanco para el logo */
-            padding: 20px 10px;
+            background: #ffffff;
+            padding: 25px 10px;
             text-align: center;
-            border-bottom: 2px solid #d9d9d9;
+            border-bottom: 1px solid #d4d4d4;
         }
 
         header img {
-            max-width: 220px;
+            max-width: 240px;
+            filter: drop-shadow(0 2px 3px rgba(0,0,0,0.08));
         }
 
-        /* CONTENEDOR CENTRAL */
+        /* CONTENEDOR */
         .container {
-            max-width: 850px;
-            margin: 50px auto;
+            max-width: 900px;
+            margin: 60px auto;
             background: white;
-            padding: 40px 50px;
-            border-radius: 18px;
-            box-shadow: 0 6px 25px rgba(0,0,0,0.08);
+            padding: 50px 60px;
+            border-radius: 20px;
+            box-shadow: 0 10px 35px rgba(0,0,0,0.10);
+            animation: fadeIn 0.6s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
         }
 
         h1 {
             text-align: center;
             color: #003060;
-            font-size: 34px;
+            font-size: 36px;
             margin-top: 0;
+            letter-spacing: -0.5px;
         }
 
         p {
             font-size: 18px;
-            line-height: 1.6;
+            line-height: 1.7;
             margin-bottom: 25px;
+            color: #4a4a4a;
         }
 
-        /* BOTONES */
-        .links {
+        /* SECCIÓN TARJETAS */
+        .cards {
             display: flex;
-            flex-direction: column;
-            gap: 18px;
-            margin-top: 35px;
+            gap: 25px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
-        .link-btn {
-            display: block;
+        .card {
+            background: #ffffff;
+            width: 260px;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+            text-align: center;
+            transition: 0.25s;
+            border-top: 6px solid #003060;
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 10px 28px rgba(0,0,0,0.12);
+        }
+
+        .card-icon {
+            font-size: 46px;
+            margin-bottom: 10px;
+            color: #003060;
+        }
+
+        .card-title {
+            font-size: 22px;
+            font-weight: bold;
+            color: #003060;
+            margin-bottom: 12px;
+        }
+
+        .card a {
+            display: inline-block;
+            margin-top: 10px;
+            font-size: 17px;
+            padding: 10px 16px;
             background: #003060;
             color: white;
-            padding: 16px;
-            text-align: center;
-            border-radius: 10px;
             text-decoration: none;
-            font-size: 20px;
-            font-weight: 600;
+            border-radius: 8px;
             transition: 0.25s;
-            letter-spacing: 0.5px;
         }
 
-        .link-btn:hover {
+        .card a:hover {
             background: #0055a5;
-            transform: translateY(-2px);
         }
 
         footer {
             text-align: center;
-            margin-top: 50px;
-            padding: 20px;
-            color: #555;
+            margin-top: 45px;
+            padding: 25px;
+            color: #666;
             font-size: 15px;
         }
     </style>
@@ -93,35 +129,50 @@
 
 <div class="container">
 
-    <h1>Sistema Integral de Control de Consumibles</h1>
+    <h1>Control Integral de Consumibles</h1>
 
     <p>
-        Bienvenido al sistema desarrollado para mejorar el control, registro y trazabilidad de consumibles dentro de 
-        <strong>Compu Services S. A. de C. V.</strong>.  
-        Este sistema permite que los ingenieros soliciten materiales, que el área correspondiente autorice las
-        solicitudes y que el almacén registre las entregas de manera centralizada y eficiente.
+        Bienvenido al sistema centralizado para la gestión, seguimiento y trazabilidad de consumibles del área
+        de laboratorio de <strong>Compu Services S. A. de C. V.</strong>.
+        Esta herramienta permite administrar el flujo completo: desde la solicitud realizada por el ingeniero,
+        pasando por su autorización, hasta el registro de entrega.
     </p>
 
-    <p><strong>Desarrollado por:</strong> Fernando Mora</p>
+    <p><strong>Desarrollado por:</strong> Fernando Mora – Jefe de Laboratorio</p>
 
-    <div class="links">
-        <a class="link-btn" href="https://fernandoamm0.github.io/consumiblesv10/ingeniero.html" target="_blank">
-            📝 Solicitud de Consumibles
-        </a>
-        <a class="link-btn" href="https://fernandoamm0.github.io/consumiblesv10/autorizacion.html" target="_blank">
-            ✔ Autorización de Solicitudes
-        </a>
-        <a class="link-btn" href="https://fernandoamm0.github.io/consumiblesv10/entrega.html" target="_blank">
-            📦 Registro de Entregas
-        </a>
+    <div class="cards">
+
+        <!-- SOLICITUD -->
+        <div class="card">
+            <div class="card-icon">📝</div>
+            <div class="card-title">Solicitud</div>
+            <p>Registro inicial de consumibles solicitados por los ingenieros.</p>
+            <a href="https://fernandoamm0.github.io/consumiblesv10/ingeniero.html" target="_blank">Entrar</a>
+        </div>
+
+        <!-- AUTORIZACIÓN -->
+        <div class="card">
+            <div class="card-icon">✔</div>
+            <div class="card-title">Autorización</div>
+            <p>Validación y aprobación interna de solicitudes registradas.</p>
+            <a href="https://fernandoamm0.github.io/consumiblesv10/autorizacion.html" target="_blank">Entrar</a>
+        </div>
+
+        <!-- ENTREGA -->
+        <div class="card">
+            <div class="card-icon">📦</div>
+            <div class="card-title">Entrega</div>
+            <p>Registro final de consumibles entregados por almacén/laboratorio.</p>
+            <a href="https://fernandoamm0.github.io/consumiblesv10/entrega.html" target="_blank">Entrar</a>
+        </div>
+
     </div>
 
 </div>
 
 <footer>
-    Compu Services S. A. de C. V. • Sistema desarrollado por Fernando Mora • 2025
+    © 2025 Compu Services S. A. de C. V. · Sistema desarrollado por Fernando Mora
 </footer>
 
 </body>
 </html>
-
