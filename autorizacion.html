@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Autorización de Solicitudes - CompuServices</title>
+  <style>
+    body { font-family:'Segoe UI', sans-serif; background:#f4f4f4; margin:0; padding:0; }
+    header { text-align:center; padding:15px; }
+    header img { height:60px; }
+    h1 { margin:10px 0; color:#002b5c; font-weight:600; }
+    .container { width:90%; margin:20px auto; background:white; padding:25px; border-radius:10px;
+                 box-shadow:0px 2px 6px rgba(0,0,0,0.12); display:flex; gap:40px; align-items:flex-start; }
+    table { width:100%; border-collapse:collapse; margin-top:20px; }
+    th, td { border:1px solid #ddd; padding:8px; text-align:center; font-size:14px; }
+    th { background:#002b5c; color:white; }
+    .boton-autorizar { background:#28a745; color:white; padding:6px 12px; border:none; border-radius:4px;
+                       cursor:pointer; font-size:13px; font-weight:bold; }
+    .boton-autorizar:hover { background:#218838; }
+    .manual { flex:1; background:#eef2f7; padding:15px; border-left:4px solid #002b5c; font-size:13px; border-radius:6px; }
+    .manual h2 { margin-top:0; font-size:14px; color:#002b5c; }
+    .manual ul { padding-left:18px; }
+    .manual li { margin-bottom:8px; }
+    .manual a { color:#002b5c; font-weight:bold; text-decoration:none; }
+    footer { text-align:center; margin-top:25px; font-size:13px; color:#555; }
+    #pantallaCarga { display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+                     background-color:rgba(0,0,0,0.55); z-index:9999; text-align:center; padding-top:20%;
+                     color:white; font-size:22px; font-weight:bold; }
+    .spinner { margin-top:20px; border:6px solid #f3f3f3; border-top:6px solid #ffffff; border-radius:50%;
+               width:45px; height:45px; animation:spin 1s linear infinite; display:inline-block; }
+    @keyframes spin { 0% { transform:rotate(0deg);} 100% { transform:rotate(360deg);} }
+  </style>
+</head>
+<body>
+
+<header>
+  <img src="https://www.compuservices.com.mx/wpimages/compu-services.png" alt="Logo CompuServices">
+  <h1>Autorización de Solicitudes</h1>
+</header>
+
+<div class="container">
+  <!-- Tabla de solicitudes -->
+  <div style="flex:2;">
+    <table id="tablaSolicitudes">
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Ingeniero</th>
+          <th>Lote</th>
+          <th>Clave</th>
+          <th>Cantidad</th>
+          <th>Estado</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Aquí se llenarán las solicitudes pendientes -->
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Manual de uso -->
+  <div class="manual">
+    <h2>Manual de Autorización</h2>
+    <ul>
+      <li>📋 Revise la lista de solicitudes pendientes en la tabla.</li>
+      <li>👀 Verifique que los datos (ingeniero, lote, clave, cantidad) sean correctos.</li>
+      <li>✅ Para autorizar, haga clic en el botón <b>Autorizar</b> de la fila correspondiente.</li>
+      <li>⏳ Espere el mensaje de confirmación. El sistema actualizará automáticamente el estado.</li>
+      <li>🔄 La tabla se refrescará mostrando las solicitudes restantes.</li>
+    </ul>
+    📑 Consulte el <a href="https://raw.githubusercontent.com/Fernandoamm0/consumibles/main/catalogoconsumibles.pdf" target="_blank">Catálogo de Consumibles</a> si necesita validar claves.
+  </div>
+</div>
+
+<footer>
+  Creado por Fernando Mora © 2025 - Sistema de solicitud de consumibles V1.0 - CompuServices S. A. de C. V.
+</footer>
+
+<div id="pantallaCarga">
+  Procesando autorización... ⏳
+  <div class="spinner"></div>
+</div>
+
+<script>
+// URL de tu WebApp
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzfISsvFOxT4LiAZLsGwIwDaCCqPjM86-0A9Dcc1h3Pml9m4Li5RuT6kM8JQA0ZKWjC/exec";
+
+// Renderizar tabla con datos reales
+function cargarSolicitudes() {
+  fetch(SCRIPT_URL)
+    .then(res => res.json())
+    .then(data => {
+      const tbody = document.querySelector("#tablaSolicitudes tbody");
+      tbody.innerHTML = "";
+      data.forEach(s => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${s.fecha}</td>
+          <td>${s.ingeniero}</td>
+          <td>${s.lote}</td>
+          <td>${s.clave}</td>
+          <td>${s.cantidad}</td>
+          <td>${s.estado}</td>
+          <td><button class="boton-autorizar" onclick="autorizar(${s.fila})">Autorizar</button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    })
+    .catch(err => {
+      alert("❌ Error al cargar solicitudes: " + err);
+    });
+}
+
+// Autorizar solicitud
+function autorizar(filaId) {
+  document.getElementById("pantallaCarga").style.display = "block";
+  fetch(SCRIPT_URL + "?filaId=" + filaId + "&nuevoEstado=Autorizado")
+    .then(res => res.text())
+    .then(text => {
+      alert("✅ Solicitud autorizada (fila " + filaId + ")");
+      document.getElementById("pantallaCarga").style.display = "none";
+      cargarSolicitudes(); // refrescar tabla
+    })
+    .catch(err => {
+      alert("❌ Error: " + err);
+      document.getElementById("pantallaCarga").style.display = "none";
+    });
+}
+
+// Inicializar
+cargarSolicitudes();
+</script>
+
+</body>
+</html>
+

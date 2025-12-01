@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Solicitud de Consumibles - CompuServices</title>
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; background-color: #f4f4f4; margin:0; padding:0; }
+    header { text-align:center; padding:15px; }
+    header img { height:60px; }
+    h1 { margin:10px 0; color:#002b5c; font-weight:600; }
+    .container { width:90%; margin:20px auto; background:white; padding:25px; border-radius:10px;
+                 box-shadow:0px 2px 6px rgba(0,0,0,0.12); display:flex; gap:40px; align-items:flex-start; }
+    .form-section { flex:2; }
+    .manual { flex:1; background:#eef2f7; padding:15px; border-left:4px solid #002b5c; font-size:13px; border-radius:6px; }
+    .manual h2 { margin-top:0; font-size:14px; color:#002b5c; }
+    .manual a { color:#002b5c; font-weight:bold; text-decoration:none; }
+    .form-group { margin-bottom:14px; }
+    .form-group label { font-size:14px; font-weight:600; display:block; margin-bottom:4px; }
+    .form-group input, .form-group select { width:100%; padding:6px 8px; font-size:14px; border:1px solid #bbb; border-radius:4px; box-sizing:border-box; }
+    .consumible-group { width:100%; background:#fafafa; padding:12px; border-radius:6px; border:1px solid #ddd; margin-bottom:12px; display:flex; gap:20px; }
+    .consumible-group .form-group { flex:1; margin-bottom:0; }
+    .boton-agregar { background-color:#ccc; color:#002b5c; padding:8px 14px; border:none; border-radius:4px; cursor:pointer; font-size:14px; font-weight:600; margin-top:10px; }
+    .boton-agregar:hover { background-color:#bbb; }
+    .boton-enviar { background-color:#002b5c; color:white; padding:10px 18px; border:none; border-radius:4px; cursor:pointer; font-size:15px; margin-top:18px; font-weight:bold; }
+    .boton-enviar:hover { background-color:#004080; }
+    footer { text-align:center; margin-top:25px; font-size:13px; color:#555; }
+    #pantallaCarga { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.55); z-index:9999; text-align:center; padding-top:20%; color:white; font-size:22px; font-weight:bold; }
+    .spinner { margin-top:20px; border:6px solid #f3f3f3; border-top:6px solid #ffffff; border-radius:50%; width:45px; height:45px; animation:spin 1s linear infinite; display:inline-block; }
+    @keyframes spin { 0% { transform:rotate(0deg);} 100% { transform:rotate(360deg);} }
+  </style>
+</head>
+<body>
+
+<header>
+  <img src="https://www.compuservices.com.mx/wpimages/compu-services.png" alt="Logo CompuServices">
+  <h1>Solicitud de Consumibles</h1>
+</header>
+
+<div class="container">
+  <div class="form-section">
+    <form id="solicitudForm">
+      <div class="form-group">
+        <label>Ingeniero:</label>
+        <select name="ingeniero" required>
+          <option value="">Seleccione...</option>
+          <option>Alejandro Peralta</option>
+          <option>Elizabeth Sosa</option>
+          <option>Enrique Alegría</option>
+          <option>Francisco Degante</option>
+          <option>Guadalupe García</option>
+          <option>Israel Rodriguez</option>
+          <option>Israel Tamayo</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Lote:</label>
+        <input type="text" name="lote" required>
+      </div>
+
+      <div id="consumibles">
+        <div class="consumible-group">
+          <div class="form-group">
+            <label>Clave de Consumible:</label>
+            <input type="text" name="clave[]" required>
+          </div>
+          <div class="form-group">
+            <label>Cantidad:</label>
+            <input type="number" name="cantidad[]" min="1" required>
+          </div>
+        </div>
+      </div>
+
+      <button type="button" class="boton-agregar" onclick="agregarConsumible()">➕ Agregar otro consumible</button><br>
+      <button type="submit" class="boton-enviar">Enviar solicitud</button>
+    </form>
+  </div>
+
+  <div class="manual">
+    <h2>Manual de llenado</h2>
+    <ul>
+      <li>👤 <b>Ingeniero:</b> Seleccione su nombre del listado desplegable.</li>
+      <li>🏷️ <b>Lote:</b> Ingrese el código del módulo o ubicación donde se requiere el consumible.</li>
+      <li>🔑 <b>Clave de Consumible:</b> Use la clave oficial del catálogo para asegurar trazabilidad.</li>
+      <li>🔢 <b>Cantidad:</b> Ingrese el número exacto de piezas requeridas (mínimo 1).</li>
+      <li>➕ <b>Agregar otro consumible:</b> Si necesita más de un consumible, utilice el botón para añadir otra fila.</li>
+      <li>📤 <b>Enviar solicitud:</b> Revise los datos y presione el botón. El sistema confirmará el envío.</li>
+      <li>⏳ <b>Procesamiento:</b> Espere el mensaje de confirmación. La solicitud quedará registrada como <b>Pendiente</b>.</li>
+    </ul>
+    📑 Consulte el 
+    <a href="https://raw.githubusercontent.com/Fernandoamm0/consumibles/main/catalogoconsumibles.pdf" target="_blank">
+      Catálogo de Consumibles
+    </a> para verificar claves y descripciones.
+  </div>
+</div>
+
+<footer>
+  Creado por Fernando Mora © 2025 - Sistema de solicitud de consumibles V1.0 - CompuServices S. A. de C. V.
+</footer>
+
+<div id="pantallaCarga">
+  Procesando solicitud... ⏳
+  <div class="spinner"></div>
+</div>
+
+<script>
+function agregarConsumible() {
+  const div = document.createElement("div");
+  div.className = "consumible-group";
+  div.innerHTML = `
+    <div class="form-group">
+      <label>Clave de Consumible:</label>
+      <input type="text" name="clave[]" required>
+    </div>
+    <div class="form-group">
+      <label>Cantidad:</label>
+      <input type="number" name="cantidad[]" min="1" required>
+    </div>
+  `;
+  document.getElementById("consumibles").appendChild(div);
+}
+
+document.getElementById("solicitudForm").addEventListener("submit", function(e){
+  e.preventDefault();
+  document.getElementById("pantallaCarga").style.display = "block";
+
+  const formData = new FormData(this);
+
+  fetch("https://script.google.com/macros/s/AKfycbzfISsvFOxT4LiAZLsGwIwDaCCqPjM86-0A9Dcc1h3Pml9m4Li5RuT6kM8JQA0ZKWjC/exec", {
+    method: "POST",
+    body: formData
+  })
+  .then(res => res.text())
+  .then(text => {
+    alert("✅ Solicitud enviada correctamente");
+    document.getElementById("pantallaCarga").style.display = "none";
+    this.reset();
+    document.getElementById("consumibles").innerHTML = `
+      <div class="consumible-group">
+        <div class="form-group">
+          <label>Clave de Consumible:</label>
+          <input type="text" name="clave[]" required>
+        </div>
+        <div class="form-group">
+          <label>Cantidad:</label>
+          <input type="number" name="cantidad[]" min="1" required>
+        </div>
+      </div>
+    `;
+  })
+  .catch(err => {
+    alert("❌ Error al enviar: " + err);
+    document.getElementById("pantallaCarga").style.display = "none";
+  });
+});
+</script>
+
+</body>
+</html>
